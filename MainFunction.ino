@@ -3,8 +3,9 @@
 LiquidCrystal_I2C lcd(0x27, 16, 2);
 
 #include <Servo.h>
-
 #include <Keypad.h>
+#include <stdlib.h>
+#include <string.h>
 
 const byte ROWS = 4; 
 const byte COLS = 4;
@@ -13,7 +14,7 @@ char hexaKeys[ROWS][COLS] = {
   {'1', '2', '3', '10'},
   {'4', '5', '6', '11'},
   {'7', '8', '9', '12'},
-  {'15', '0', '14', '13'}
+  {'c', '0', 'r', '13'}
 };
 
 byte rowPins[ROWS] = {5, 4, 3, 2}; 
@@ -39,6 +40,8 @@ int count = 0; // number of people trepassing
 
 int max_num = 5;
 
+char mem_number[100];
+
 void setup() {
   // initialize the sensor pin as an input:
   pinMode(SENSORPIN, INPUT);   
@@ -61,6 +64,9 @@ void setup() {
   Serial.begin(9600);
 }
 
+int mynum = -1;
+//int count_char = 10;
+
 void loop(){
   // read the state of the pushbutton value:
   sensorState = digitalRead(SENSORPIN);
@@ -71,11 +77,25 @@ void loop(){
 
   char current_input = customKeypad.getKey();
 
-  int mynum = int(current_input)-48;
+  if(current_input!=0){
 
-  Serial.print(mynum);
+    if(current_input == 'r'){
+      mynum = -1;
+      //count_char = 10;
+      max_num = 5;
 
-  if (mynum > 0){
+      memset(mem_number, 0, 255);
+
+    }else if(current_input == 'c'){
+      mynum = (int) mem_number;
+
+    }else {
+      strncat(mem_number,&current_input,1);
+      //count_char += 1;
+    }
+  }
+
+  if (mynum >= 0){
   
     max_num = mynum;
   }
@@ -89,7 +109,13 @@ void loop(){
   lcd.print("    pp");
 
   lcd.setCursor(10, 0);
-  lcd.print(max_num);
+
+  if(mem_number == "" || mynum == -1){
+    lcd.print(max_num);
+
+  }else{
+    lcd.print(mem_number);
+  }
 
   lcd.setCursor(0, 1);
   lcd.print("Current : ");
@@ -181,12 +207,12 @@ void loop(){
   //for servo motor
   if(max_num <= count){
 
-    Servo1.write(180); 
+    Servo1.write(90); 
     delay(15);
 
   }else{
 
-    Servo1.write(90); 
+    Servo1.write(0); 
     delay(15);
   }
 
