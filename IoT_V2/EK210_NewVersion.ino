@@ -128,11 +128,13 @@ void loop(){
     Serial.println(max_num);
     Serial.println(" ");
     Serial.println(count);
+    Serial.println(" ");
   }else{
     lcd.print(mem_number);
     Serial.println(mem_number);
     Serial.println(" ");
     Serial.println(count);
+    Serial.println(" ");
   }
 
   lcd.setCursor(0, 1);
