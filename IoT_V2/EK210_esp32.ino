@@ -1,6 +1,5 @@
 // Load Wi-Fi library
 #include <WiFi.h>
-#include <string>
 
 // Network credentials Here
 const char* ssid     = "ESP32-Network";
@@ -38,17 +37,24 @@ void setup() {
 
 void loop(){
 
-  string two_num = Serial2.readString();
+  String two_num = Serial2.readString();
+  char numarray[7];
+  two_num.toCharArray(numarray,7);
+
   // separate two numbers received from Arduino
-  string s;
-  stringstream ss(two_num);
-  vector<string> v;
-  while (getline(ss, s, ' ')) {
-        v.push_back(s);
+  char max_pp[3]; 
+  char current_pp[3];
+  int i = 0;
+
+  while(numarray[i] != ' '){
+    max_pp[2-i] = numarray[i++];
   }
 
-  string max_pp = v[0]
-  string current_pp = v[1];
+  i++;
+  int j=0;
+  while(numarray[i] != ' '){
+    current_pp[j++] == numarray[i++];
+  }
 
   WiFiClient client = server.available();   // Listen for incoming clients
 
@@ -78,7 +84,7 @@ void loop(){
 
             // check if max capcaity changes or not
             if (header.indexOf("GET /1/inc") >= 0) {
-              Serial.println("+")               // +1
+              Serial.println("+");               // +1
             } else if (header.indexOf("GET /1/dec") >= 0) {
               Serial.println("-");               //-1
             }
