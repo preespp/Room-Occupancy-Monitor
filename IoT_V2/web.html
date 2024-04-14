@@ -1,1 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Room Occupancy Monitor</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #4ec33e;
+            margin: 0;
+            padding: 0;
+        }
 
+        h1 {
+            color: #5c260b;
+            text-align: center;
+        }
+
+        .container {
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        p {
+            line-height: 1.5;
+            text-align: center;
+            color: #666;
+        }
+
+        .gap{
+            width: 100%;
+            margin: 0 auto;
+            padding: 20 px;
+            background-color: #8cd6e3;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        button{
+            width: 30%;
+            margin: auto;
+            padding: 20 px;
+            background-color: #ed1111;
+            display: block;
+            border-radius: 20px;
+            box-shadow: 0 0 10px rgba(94, 92, 92, 0.025); 
+        }
+
+    </style>
+</head>
+<body>
+    <h1> Room Occupancy Monitor </h1>
+    <div class="container"> 
+        <p>Current People in the Room: 12</p>
+    </div>
+    <div class="gap"> <p> . </p> </div>
+    <div class="container"> 
+        <p>Maximum People in the Room: 20</p>
+    </div>
+    <div class="gap"> <p> . </p> </div>
+    <p>Changing Maximum Capacity</p>
+    <a href="/1/inc"><button type="button">+1</button></a>
+    <p></p>
+    <a href="/1/dec"><button type="button">-1</button></a>
+</body>
