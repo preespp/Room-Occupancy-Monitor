@@ -111,11 +111,13 @@ void loop(){
     Serial.println(max_num);
     Serial.println(" ");
     Serial.println(count);
+    Serial.println(" ");
   }else{
     lcd.print(mem_number);
     Serial.println(mem_num);
     Serial.println(" ");
     Serial.println(count);
+    Serial.println(" ");
   }
 
   lcd.setCursor(0, 1);
@@ -129,10 +131,10 @@ void loop(){
 
   // task check sensor 1
     // check if the sensor beam 1 is broken
-  if (sensorState && !lastState) {
-    continue;
+  //if (sensorState && !lastState) {
+   // continue;
     //Serial.println("Unbroken");
-  }
+  //}
 
   if (!sensorState && lastState) {
 
@@ -151,10 +153,10 @@ void loop(){
   lastState = sensorState;
 
     // check if the sensor beam 2 is broken
-  if (sensorState2 && !lastState2) {
-    continue;
+//  if (sensorState2 && !lastState2) {
+ //   continue;
     //Serial.println("Unbroken2");
-  }
+ // }
 
   if (!sensorState2 && lastState2) {
 
