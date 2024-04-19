@@ -1,4 +1,3 @@
-// Arduino Module
 #include <LiquidCrystal_I2C.h>
 
 LiquidCrystal_I2C lcd(0x27, 16, 2);
@@ -12,10 +11,10 @@ const byte ROWS = 4;
 const byte COLS = 4;
 
 char hexaKeys[ROWS][COLS] = {
-  {'1', '2', '3', '10'},
-  {'4', '5', '6', '11'},
-  {'7', '8', '9', '12'},
-  {'c', '0', '14', 'r'}
+  {'1', '2', '3', ':'},
+  {'4', '5', '6', ';'},
+  {'7', '8', '9', '<'},
+  {'-', '0', '+', '='}
 };
 
 byte rowPins[ROWS] = {5, 4, 3, 2}; 
@@ -26,6 +25,10 @@ Keypad customKeypad = Keypad(makeKeymap(hexaKeys), rowPins, colPins, ROWS, COLS)
 #define SENSORPIN 11
 
 #define SENSORPIN2 12 // changable 
+
+// for UART Communication with esp32
+#define RXp2 0
+#define TXp2 1
 
 int myarray[2]; // signal for checking trepassing or exiting 
 
@@ -63,10 +66,8 @@ void setup() {
   myarray[1] = 0;
   
   Serial.begin(9600);
+  //Serial.begin(115200, SERIAL_8N1, RXp2, TXp2);
 }
-
-int mynum = -1;
-int count_char = 10;
 
 void loop(){
   // read the state of the pushbutton value:
@@ -74,27 +75,17 @@ void loop(){
 
   sensorState2 = digitalRead(SENSORPIN2);
 
-  // changing the maximum number
+  // convert ascii to number (off-set 48)
+  int current_input = customKeypad.getKey()-48;
 
-  char current_input = customKeypad.getKey();
-
-  if(current_input!=0){
-    if(current_input == 'r'){
-      mynum = -1;
-      count_char = 10;
-      max_num = 5;
-      memset(mem_number, 0, 255);;
-    }else if(current_input == 'c'){
-      mynum = (int) mem_number;
-    }else {
-      strncat(mem_number,&current_input,1);
-      count_char += 1;
+  if(current_input!=-48){
+    if(current_input== -5){ // convert ascii of +1
+      max_num++;
+    }else if(current_input == -3 && max_num > 0){ // convert ascii of -1
+      max_num--;
+    }else{
+      max_num = current_input;
     }
-  }
-
-  if (mynum >= 0){
-  
-    max_num = mynum;
   }
 
   // task for LCD Screen
@@ -105,20 +96,13 @@ void loop(){
   lcd.setCursor(10, 0);
   lcd.print("    pp");
 
-  lcd.setCursor(10, 0);
-  if(mem_number == ""){
-    lcd.print(max_num);
-    Serial.println(max_num);
-    Serial.println(" ");
-    Serial.println(count);
-    Serial.println(" ");
-  }else{
-    lcd.print(mem_number);
-    Serial.println(mem_num);
-    Serial.println(" ");
-    Serial.println(count);
-    Serial.println(" ");
-  }
+  lcd.setCursor(11, 0);
+  lcd.print(max_num);
+  Serial.println("Hello World");
+  // Serial.println(max_num);
+  // Serial.println(" ");
+  // Serial.println(count);
+  // Serial.println(" ");
 
   lcd.setCursor(0, 1);
   lcd.print("Current : ");
@@ -126,13 +110,13 @@ void loop(){
   lcd.setCursor(10, 1);
   lcd.print("    pp");
 
-  lcd.setCursor(10, 1);
+  lcd.setCursor(11, 1);
   lcd.print(count);
 
   // task check sensor 1
     // check if the sensor beam 1 is broken
   //if (sensorState && !lastState) {
-   // continue;
+    //break;
     //Serial.println("Unbroken");
   //}
 
@@ -153,10 +137,10 @@ void loop(){
   lastState = sensorState;
 
     // check if the sensor beam 2 is broken
-//  if (sensorState2 && !lastState2) {
- //   continue;
+  //if (sensorState2 && !lastState2) {
+    //break;
     //Serial.println("Unbroken2");
- // }
+  //}
 
   if (!sensorState2 && lastState2) {
 
@@ -178,6 +162,7 @@ void loop(){
 
     count++;
 
+
     myarray[0] = 0;
     myarray[1] = 0; // reset the parameter array
 
@@ -194,7 +179,7 @@ void loop(){
 
     //Serial.println(count);
 
-    delay(1500);
+    delay(500);
 
   }else if((myarray[0] == 2) && (myarray[1] == 1) && (count == 0)){
 
@@ -203,7 +188,7 @@ void loop(){
 
     //Serial.println(count);
 
-    delay(1500);
+    delay(500);
   }
 
 
@@ -211,12 +196,12 @@ void loop(){
   if(max_num <= count){
 
     Servo1.write(90); 
-    delay(150);
+    delay(15);
 
   }else{
 
     Servo1.write(0); 
-    delay(150);
+    delay(15);
   }
 
 }
